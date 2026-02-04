@@ -1,0 +1,28 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/trixie64"
+
+  config.vm.provider "virtualbox" do |vb|
+    # XFCE è leggero, 2GB di RAM sono più che sufficienti (contro i 4GB di KDE)
+    vb.memory = "2048"
+    vb.cpus = 2
+    vb.gui = true
+    
+    vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+    vb.customize ["modifyvm", :id, "--clipboard-mode", "bidirectional"]
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    
+    # Aggiornamento repository
+    apt-get update
+    
+    # Installazione di XFCE e del display manager LightDM (standard per XFCE)
+    # task-xfce-desktop installa l'ambiente completo con gli accessori
+    apt-get install -y task-xfce-desktop lightdm git python3 python3-venv
+    
+    # Imposta l'avvio in modalità grafica
+    systemctl set-default graphical.target
+  SHELL
+end
