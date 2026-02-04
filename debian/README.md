@@ -11,4 +11,9 @@ To connect to the system use the command:
 ```
 vagrant ssh
 ```
+Change password for user "vagrant":
+```
+passwd
+```
 
+Then reboot the system and login "vagrant" with the new password you set.
